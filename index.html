@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="v3-white">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KTV 包厢管理 - 四方案对比</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; height: 100vh; overflow: hidden; }
+
+/* ===== 全局布局 ===== */
+.app-wrapper { height: 100vh; }
+
+/* ===== 方案切换面板 (右侧悬浮) ===== */
+.theme-sidebar {
+  position: fixed; right: 0; top: 0; bottom: 0;
+  width: 240px; background: #1a1a2e; color: #fff;
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 20px rgba(0,0,0,.3); z-index: 1000;
+  transform: translateX(226px); transition: transform .25s ease;
+}
+.theme-sidebar:hover { transform: translateX(0); }
+.theme-sidebar::before {
+  content: ''; position: absolute; left: -20px; top: 0; bottom: 0; width: 20px;
+}
+.theme-tab-hint {
+  position: absolute; left: -36px; top: 50%; transform: translateY(-50%);
+  background: #1a1a2e; color: rgba(255,255,255,.8); writing-mode: vertical-rl;
+  padding: 12px 6px; border-radius: 8px 0 0 8px; font-size: 11px; font-weight: 500;
+  letter-spacing: 2px; cursor: pointer; box-shadow: -2px 0 8px rgba(0,0,0,.15);
+  transition: opacity .25s;
+}
+.theme-sidebar:hover .theme-tab-hint { opacity: 0; }
+.theme-sidebar-header {
+  padding: 20px 16px 12px; border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.theme-sidebar-header h3 { font-size: 15px; font-weight: 600; letter-spacing: 1px; }
+.theme-sidebar-header p { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 4px; }
+.theme-list { flex: 1; overflow-y: auto; padding: 8px; }
+.theme-item {
+  padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px;
+  transition: all .2s; border: 2px solid transparent;
+}
+.theme-item:hover { background: rgba(255,255,255,.08); }
+.theme-item.active { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.3); }
+.theme-item .theme-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.theme-item .theme-desc { font-size: 11px; color: rgba(255,255,255,.5); margin-bottom: 8px; }
+.theme-swatches { display: flex; gap: 3px; }
+.theme-swatch {
+  width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(255,255,255,.2);
+}
+.theme-sidebar-footer {
+  padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.1);
+  font-size: 11px; color: rgba(255,255,255,.4); text-align: center;
+}
+.shortcut-hint { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.shortcut-hint kbd {
+  background: rgba(255,255,255,.15); border-radius: 3px; padding: 1px 5px;
+  font-size: 10px; font-family: monospace;
+}
+
+/* ===== KTV 应用 ===== */
+.app { display: flex; height: 100vh; }
+
+/* ===== 侧边栏 ===== */
+.sidebar {
+  width: 140px; background: #fff; border-right: 1px solid #e6e6e6;
+  display: flex; flex-direction: column; align-items: center; padding: 16px 0;
+  box-shadow: 0 0 10px rgba(0,0,0,.05); flex-shrink: 0;
+}
+.sidebar-item {
+  width: 100px; height: 92px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; border-radius: 8px;
+  cursor: pointer; margin-bottom: 4px; color: rgba(0,0,0,.6); transition: background .2s;
+}
+.sidebar-item:hover { background: #f0f0f0; }
+.sidebar-item.active { background: #f3f3f3; color: #E23939; }
+.sidebar-item .material-icons-outlined { font-size: 32px; margin-bottom: 4px; }
+.sidebar-item span { font-size: 14px; font-weight: 500; }
+.sidebar-spacer { flex: 1; }
+.sidebar-bottom { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 8px; }
+.sidebar-bottom .sidebar-icon {
+  width: 100px; height: 52px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: pointer; color: rgba(0,0,0,.6);
+}
+.sidebar-bottom .sidebar-icon:hover { background: #f0f0f0; }
+.sidebar-avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: #ddd;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; color: #999;
+}
+
+/* ===== 主内容 ===== */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* ===== 顶部导航 ===== */
+.topbar {
+  height: 68px; background: #fff; border-bottom: 1px solid #e6e6e6;
+  display: flex; align-items: center; padding: 0 24px; gap: 12px; flex-shrink: 0;
+}
+.tab-group {
+  display: flex; background: #fff; border-radius: 10px; height: 52px;
+  padding: 4px; align-items: center; border: 1px solid #eee;
+}
+.tab-btn {
+  height: 44px; padding: 0 20px; border-radius: 6px; border: none;
+  font-size: 14px; font-weight: 500; cursor: pointer; background: transparent; color: #666;
+}
+.tab-btn.active { background: #E23939; color: #fff; }
+.search-box {
+  flex: 1; max-width: 320px; margin: 0 auto;
+  height: 44px; border-radius: 22px; border: 1px solid #e0e0e0; padding: 0 16px;
+  display: flex; align-items: center; gap: 8px; background: #f8f8f8;
+}
+.search-box input { border: none; background: none; outline: none; flex: 1; font-size: 14px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.sort-btn, .filter-btn {
+  height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #eee;
+  background: #fff; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  font-size: 13px; color: #666;
+}
+.view-toggle { display: flex; gap: 4px; }
+.view-toggle .material-icons-outlined {
+  font-size: 24px; cursor: pointer; padding: 4px; border-radius: 4px; color: #999;
+}
+.view-toggle .material-icons-outlined.active { color: #E23939; }
+
+/* ===== 内容区 ===== */
+.content-area { flex: 1; display: flex; overflow: hidden; }
+.grid-area { flex: 1; overflow-y: auto; padding: 24px; }
+.section-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 16px; }
+.room-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 31.5px; margin-bottom: 32px;
+}
+
+/* ===== 房间卡片 - 基础样式 ===== */
+.room-card {
+  height: 198px; border-radius: 16px; border: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; cursor: pointer;
+  transition: all .2s; padding: 12px; position: relative; background: #fff;
+}
+.room-card:hover { box-shadow: 0 12px 12px rgba(0,0,0,.1); border-color: #ccc; }
+.room-card.selected { border: 2px solid #ccc; box-shadow: 0 12px 12px rgba(0,0,0,.1); transform: scale(1.05); }
+.room-card .room-name { font-size: 24px; font-weight: 300; line-height: 1.2; }
+.room-card .room-time { font-size: 14px; font-weight: 300; color: #4b5563; margin-top: 4px; }
+.room-card .room-price { margin-top: auto; font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.room-card .room-price .status { margin-right: 4px; }
+.room-card .room-price .currency { font-size: 14px; font-weight: 400; margin-right: 2px; }
+.room-card .room-price .amount { font-size: 22px; font-weight: 600; line-height: 1; }
+.room-card .room-price .decimal { font-size: 14px; font-weight: 400; }
+.room-card .room-type { font-size: 12px; color: #6b7280; font-weight: normal; margin-top: 4px; }
+.room-card .status-label {
+  position: absolute; bottom: 12px; right: 12px;
+  font-size: 12px; padding: 4px 8px; border-radius: 4px; font-weight: normal;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* ==============================
+   1. V3 · 宝蓝系（渐变） — 空闲改白色
+   ============================== */
+[data-theme="v3-white"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
+[data-theme="v3-white"] .room-card.idle .room-time { color: #4b5563; }
+[data-theme="v3-white"] .room-card.idle .room-type { color: #6b7280; }
+[data-theme="v3-white"] .room-card.idle .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
+
+[data-theme="v3-white"] .room-card { color: #fff; border-color: transparent; }
+[data-theme="v3-white"] .room-card .room-time { color: rgba(255,255,255,.8); }
+[data-theme="v3-white"] .room-card .room-type { color: rgba(255,255,255,.8); }
+[data-theme="v3-white"] .room-card .room-price { color: #fff; }
+[data-theme="v3-white"] .room-card .status-label { background: rgba(255,255,255,.2); color: #fff; }
+
+[data-theme="v3-white"] .room-card.in-use { background: linear-gradient(180deg, #2E7D32, #66BB6A); }
+[data-theme="v3-white"] .room-card.near-timeout { background: linear-gradient(180deg, #FF8F00, #FFCA28); }
+[data-theme="v3-white"] .room-card.overtime { background: linear-gradient(180deg, #BF360C, #E57373); }
+[data-theme="v3-white"] .room-card.fault { background: linear-gradient(180deg, #5D4037, #A1887F); }
+[data-theme="v3-white"] .room-card.cleaning { background: linear-gradient(180deg, #0277BD, #4FC3F7); }
+[data-theme="v3-white"] .room-card.booked { background: linear-gradient(180deg, #6A1B9A, #AB47BC); }
+[data-theme="v3-white"] .room-card.guiding { background: linear-gradient(180deg, #00897B, #4DB6AC); }
+
+[data-theme="v3-white"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="v3-white"] .legend-dot.in-use { background: linear-gradient(180deg, #2E7D32, #66BB6A); border: none; }
+[data-theme="v3-white"] .legend-dot.near-timeout { background: linear-gradient(180deg, #FF8F00, #FFCA28); border: none; }
+[data-theme="v3-white"] .legend-dot.overtime { background: linear-gradient(180deg, #BF360C, #E57373); border: none; }
+[data-theme="v3-white"] .legend-dot.fault { background: linear-gradient(180deg, #5D4037, #A1887F); border: none; }
+[data-theme="v3-white"] .legend-dot.cleaning { background: linear-gradient(180deg, #0277BD, #4FC3F7); border: none; }
+[data-theme="v3-white"] .legend-dot.booked { background: linear-gradient(180deg, #6A1B9A, #AB47BC); border: none; }
+[data-theme="v3-white"] .legend-dot.guiding { background: linear-gradient(180deg, #00897B, #4DB6AC); border: none; }
+
+/* ==============================
+   2. BASE 高饱和 — 非白底文字反白
+   ============================== */
+/* 高饱和：统一所有卡片文字字重 */
+[data-theme="base-sat-w"] .room-card .room-name { font-weight: 700; }
+[data-theme="base-sat-w"] .room-card .room-time { font-weight: 600; }
+[data-theme="base-sat-w"] .room-card .room-type { font-weight: 600; }
+[data-theme="base-sat-w"] .room-card .room-price { font-weight: 700; }
+[data-theme="base-sat-w"] .room-card .status-label { font-weight: 600; }
+
+/* 白色背景卡片：深色文字 */
+[data-theme="base-sat-w"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
+[data-theme="base-sat-w"] .room-card.idle .room-time { color: #4b5563; }
+[data-theme="base-sat-w"] .room-card.idle .room-type { color: #6b7280; }
+[data-theme="base-sat-w"] .room-card.idle .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
+
+[data-theme="base-sat-w"] .room-card.booked { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
+[data-theme="base-sat-w"] .room-card.booked .room-time { color: #4b5563; }
+[data-theme="base-sat-w"] .room-card.booked .room-type { color: #6b7280; }
+[data-theme="base-sat-w"] .room-card.booked .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
+
+[data-theme="base-sat-w"] .room-card.cleaning { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
+[data-theme="base-sat-w"] .room-card.cleaning .room-time { color: #4b5563; }
+[data-theme="base-sat-w"] .room-card.cleaning .room-type { color: #6b7280; }
+[data-theme="base-sat-w"] .room-card.cleaning .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
+
+/* 非白色背景卡片：白色文字 + 阴影增强可读性 */
+[data-theme="base-sat-w"] .room-card.guiding,
+[data-theme="base-sat-w"] .room-card.in-use,
+[data-theme="base-sat-w"] .room-card.near-timeout,
+[data-theme="base-sat-w"] .room-card.overtime,
+[data-theme="base-sat-w"] .room-card.fault {
+  color: #fff;
+}
+[data-theme="base-sat-w"] .room-card.guiding .room-name,
+[data-theme="base-sat-w"] .room-card.in-use .room-name,
+[data-theme="base-sat-w"] .room-card.near-timeout .room-name,
+[data-theme="base-sat-w"] .room-card.overtime .room-name,
+[data-theme="base-sat-w"] .room-card.fault .room-name { color: #fff; }
+[data-theme="base-sat-w"] .room-card.guiding .room-time,
+[data-theme="base-sat-w"] .room-card.in-use .room-time,
+[data-theme="base-sat-w"] .room-card.near-timeout .room-time,
+[data-theme="base-sat-w"] .room-card.overtime .room-time,
+[data-theme="base-sat-w"] .room-card.fault .room-time { color: #fff; }
+[data-theme="base-sat-w"] .room-card.guiding .room-type,
+[data-theme="base-sat-w"] .room-card.in-use .room-type,
+[data-theme="base-sat-w"] .room-card.near-timeout .room-type,
+[data-theme="base-sat-w"] .room-card.overtime .room-type,
+[data-theme="base-sat-w"] .room-card.fault .room-type { color: #fff; }
+[data-theme="base-sat-w"] .room-card.guiding .room-price,
+[data-theme="base-sat-w"] .room-card.in-use .room-price,
+[data-theme="base-sat-w"] .room-card.near-timeout .room-price,
+[data-theme="base-sat-w"] .room-card.overtime .room-price,
+[data-theme="base-sat-w"] .room-card.fault .room-price { color: #fff; }
+[data-theme="base-sat-w"] .room-card.guiding .status-label,
+[data-theme="base-sat-w"] .room-card.in-use .status-label,
+[data-theme="base-sat-w"] .room-card.near-timeout .status-label,
+[data-theme="base-sat-w"] .room-card.overtime .status-label,
+[data-theme="base-sat-w"] .room-card.fault .status-label { background: rgba(0,0,0,.15); color: #fff; text-shadow: none; }
+
+[data-theme="base-sat-w"] .room-card.guiding { background: #6EE8A8; border-color: #6EE8A8; }
+[data-theme="base-sat-w"] .room-card.in-use { background: #80CFFF; border-color: #80CFFF; }
+[data-theme="base-sat-w"] .room-card.near-timeout { background: #FFD26E; border-color: #FFD26E; }
+[data-theme="base-sat-w"] .room-card.overtime { background: #FF9797; border-color: #FF9797; }
+[data-theme="base-sat-w"] .room-card.fault { background: #C2BFBD; border-color: #C2BFBD; }
+
+
+[data-theme="base-sat-w"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.booked { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.guiding { background: #6EE8A8; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.in-use { background: #80CFFF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.near-timeout { background: #FFD26E; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.overtime { background: #FF9797; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.cleaning { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.fault { background: #C2BFBD; border: 1px solid #999; }
+
+/* ==============================
+   3. BOTTOM · 边框 — 底部标记条+彩色底边框
+   ============================== */
+[data-theme="bottom-border"] .room-card { color: #333; }
+[data-theme="bottom-border"] .room-card .room-time { color: #4b5563; }
+[data-theme="bottom-border"] .room-card .room-type { color: #6b7280; }
+[data-theme="bottom-border"] .room-card .status-label { background: rgba(255,255,255,.5); color: #6b7280; }
+
+[data-theme="bottom-border"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; border-bottom: 4px solid #999; }
+[data-theme="bottom-border"] .room-card.in-use { background: #C5E4F7; border-color: #C5E4F7; border-bottom: 4px solid #1976D2; }
+[data-theme="bottom-border"] .room-card.in-use .room-price { color: #e23939; }
+[data-theme="bottom-border"] .room-card.near-timeout { background: #FFE5AB; border-color: #FFE5AB; border-bottom: 4px solid #EF6C00; }
+[data-theme="bottom-border"] .room-card.near-timeout .room-price { color: #c62828; }
+[data-theme="bottom-border"] .room-card.overtime { background: #FFD4D4; border-color: #FFD4D4; border-bottom: 4px solid #C62828; }
+[data-theme="bottom-border"] .room-card.overtime .room-price { color: #b71c1c; }
+[data-theme="bottom-border"] .room-card.fault { background: #DFDEDD; border-color: #DFDEDD; border-bottom: 4px solid #757575; }
+[data-theme="bottom-border"] .room-card.cleaning { background: #E8F5E8; border-color: #E8F5E8; border-bottom: 4px solid #388E3C; }
+[data-theme="bottom-border"] .room-card.guiding { background: #F0E6FF; border-color: #F0E6FF; border-bottom: 4px solid #7B1FA2; }
+[data-theme="bottom-border"] .room-card.booked { background: #FFFFFF; border-color: #e2e8f0; border-bottom: 4px solid #7B61FF; }
+
+[data-theme="bottom-border"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.in-use { background: #C5E4F7; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.near-timeout { background: #FFE5AB; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.overtime { background: #FFD4D4; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.fault { background: #DFDEDD; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.cleaning { background: #E8F5E8; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.guiding { background: #F0E6FF; border: 1px solid #999; }
+[data-theme="bottom-border"] .legend-dot.booked { background: #FFFFFF; border: 1px solid #7B61FF; }
+
+/* ==============================
+   4. BOTTOM · 无渐变 — 纯色填充无边框
+   ============================== */
+[data-theme="bottom-flat"] .room-card { color: #333; }
+[data-theme="bottom-flat"] .room-card .room-time { color: #4b5563; }
+[data-theme="bottom-flat"] .room-card .room-type { color: #6b7280; }
+[data-theme="bottom-flat"] .room-card .status-label { background: rgba(255,255,255,.5); color: #6b7280; }
+
+[data-theme="bottom-flat"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; }
+[data-theme="bottom-flat"] .room-card.in-use { background: #C5E4F7; border-color: #C5E4F7; }
+[data-theme="bottom-flat"] .room-card.in-use .room-price { color: #e23939; }
+[data-theme="bottom-flat"] .room-card.near-timeout { background: #FFE5AB; border-color: #FFE5AB; }
+[data-theme="bottom-flat"] .room-card.near-timeout .room-price { color: #c62828; }
+[data-theme="bottom-flat"] .room-card.overtime { background: #FFD4D4; border-color: #FFD4D4; }
+[data-theme="bottom-flat"] .room-card.overtime .room-price { color: #b71c1c; }
+[data-theme="bottom-flat"] .room-card.fault { background: #DFDEDD; border-color: #DFDEDD; }
+[data-theme="bottom-flat"] .room-card.cleaning { background: #E8F5E8; border-color: #E8F5E8; }
+[data-theme="bottom-flat"] .room-card.guiding { background: #F0E6FF; border-color: #F0E6FF; }
+[data-theme="bottom-flat"] .room-card.booked { background: #7B61FF; border-color: #7B61FF; color: #fff; }
+[data-theme="bottom-flat"] .room-card.booked .room-name { color: #fff; }
+[data-theme="bottom-flat"] .room-card.booked .room-time { color: rgba(255,255,255,.85); }
+[data-theme="bottom-flat"] .room-card.booked .room-type { color: rgba(255,255,255,.8); }
+[data-theme="bottom-flat"] .room-card.booked .status-label { background: rgba(255,255,255,.25); color: #fff; }
+
+[data-theme="bottom-flat"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.in-use { background: #C5E4F7; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.near-timeout { background: #FFE5AB; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.overtime { background: #FFD4D4; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.fault { background: #DFDEDD; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.cleaning { background: #E8F5E8; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.guiding { background: #F0E6FF; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.booked { background: #7B61FF; border: none; }
+
+/* ===== 右侧详情面板 ===== */
+.detail-panel {
+  width: 544px; background: #fff; border-left: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
+}
+.detail-header { padding: 24px 24px 0; }
+.detail-header h2 { font-size: 28px; font-weight: 700; color: #333; }
+.detail-tags { display: flex; gap: 8px; margin-top: 8px; font-size: 13px; color: #666; align-items: center; }
+.detail-tags .sep { color: #ccc; }
+.detail-body { padding: 16px 24px; flex: 1; }
+.detail-divider { height: 1px; background: #eee; margin: 16px 0; }
+.detail-section-title { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 12px; }
+.detail-row { display: flex; align-items: center; font-size: 13px; margin-bottom: 8px; }
+.detail-row .label { color: #999; width: 56px; flex-shrink: 0; }
+.detail-row .value { color: #333; flex: 1; }
+.detail-row .price { color: #333; text-align: right; }
+.person-section { margin-top: 0; }
+.person-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.person-header .name { font-size: 14px; font-weight: 600; color: #333; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.badge.green { background: #e8f5e9; color: #4caf50; }
+.detail-footer { padding: 16px 24px; border-top: 1px solid #eee; }
+.total-row { display: flex; align-items: center; justify-content: space-between; }
+.total-row .total-label { font-size: 15px; font-weight: 600; color: #333; }
+.total-row .total-amount { font-size: 24px; font-weight: 700; color: #E23939; }
+
+/* ===== 底部状态栏 ===== */
+.statusbar {
+  height: 52px; background: #fff; border-top: 1px solid #E0E0E0;
+  display: flex; align-items: center; padding: 0 24px; gap: 12px;
+  font-size: 14px; font-weight: 500; color: #333; flex-shrink: 0;
+}
+.statusbar .spacer { flex: 1; }
+.legend { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 14px; height: 14px; border-radius: 2px; }
+
+/* 操作按钮 */
+.action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.action-btn {
+  height: 72px; border-radius: 10px; border: 1px solid #eee; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; gap: 4px; font-size: 13px; color: #333; transition: all .15s;
+}
+.action-btn:hover { background: #f5f5f5; border-color: #ddd; }
+.action-btn .material-icons-outlined { font-size: 22px; color: #666; }
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+  <!-- 方案切换面板 -->
+  <div class="theme-sidebar">
+    <div class="theme-tab-hint">配 色 方 案</div>
+    <div class="theme-sidebar-header">
+      <h3>四方案对比</h3>
+      <p>点击切换 / 键盘 1-4 / 方向键</p>
+    </div>
+    <div class="theme-list">
+
+      <div class="theme-item active" onclick="switchTheme('v3-white', this)" data-theme-id="v3-white">
+        <div class="theme-name">渐变</div>
+        <div class="theme-swatches">
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#6A1B9A,#AB47BC)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#00897B,#4DB6AC)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#2E7D32,#66BB6A)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#FF8F00,#FFCA28)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#BF360C,#E57373)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#0277BD,#4FC3F7)"></div>
+          <div class="theme-swatch" style="background:linear-gradient(180deg,#5D4037,#A1887F)"></div>
+        </div>
+        <div class="shortcut-hint"><kbd>1</kbd></div>
+      </div>
+
+      <div class="theme-item" onclick="switchTheme('base-sat-w', this)" data-theme-id="base-sat-w">
+        <div class="theme-name">高饱和</div>
+        <div class="theme-swatches">
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:#92FBC0"></div>
+          <div class="theme-swatch" style="background:#80CFFF"></div>
+          <div class="theme-swatch" style="background:#FFD26E"></div>
+          <div class="theme-swatch" style="background:#FF9797"></div>
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:#C2BFBD"></div>
+        </div>
+        <div class="shortcut-hint"><kbd>2</kbd></div>
+      </div>
+
+      <div class="theme-item" onclick="switchTheme('bottom-border', this)" data-theme-id="bottom-border">
+        <div class="theme-name">边框</div>
+        <div class="theme-swatches">
+          <div class="theme-swatch" style="background:#FFFFFF;border-bottom:3px solid #999"></div>
+          <div class="theme-swatch" style="background:#FFFFFF;border-bottom:3px solid #7B61FF"></div>
+          <div class="theme-swatch" style="background:#F0E6FF;border-bottom:3px solid #7B1FA2"></div>
+          <div class="theme-swatch" style="background:#C5E4F7;border-bottom:3px solid #1976D2"></div>
+          <div class="theme-swatch" style="background:#FFE5AB;border-bottom:3px solid #EF6C00"></div>
+          <div class="theme-swatch" style="background:#FFD4D4;border-bottom:3px solid #C62828"></div>
+          <div class="theme-swatch" style="background:#E8F5E8;border-bottom:3px solid #388E3C"></div>
+          <div class="theme-swatch" style="background:#DFDEDD;border-bottom:3px solid #757575"></div>
+        </div>
+        <div class="shortcut-hint"><kbd>3</kbd></div>
+      </div>
+
+      <div class="theme-item" onclick="switchTheme('bottom-flat', this)" data-theme-id="bottom-flat">
+        <div class="theme-name">无渐变</div>
+        <div class="theme-swatches">
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:#7B61FF"></div>
+          <div class="theme-swatch" style="background:#F0E6FF"></div>
+          <div class="theme-swatch" style="background:#C5E4F7"></div>
+          <div class="theme-swatch" style="background:#FFE5AB"></div>
+          <div class="theme-swatch" style="background:#FFD4D4"></div>
+          <div class="theme-swatch" style="background:#E8F5E8"></div>
+          <div class="theme-swatch" style="background:#DFDEDD"></div>
+        </div>
+        <div class="shortcut-hint"><kbd>4</kbd></div>
+      </div>
+
+    </div>
+    <div class="theme-sidebar-footer">
+      空闲 · 预定 · 带客 · 使用中 · 临近超时<br>已超时 · 清洁中 · 故障
+    </div>
+  </div>
+
+  <!-- KTV 应用主体 -->
+  <div class="app">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+      <div class="sidebar-item active">
+        <span class="material-icons-outlined">grid_view</span>
+        <span>包厢</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="material-icons-outlined">shopping_cart</span>
+        <span>点单</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="material-icons-outlined">receipt_long</span>
+        <span>订单</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="material-icons-outlined">inventory_2</span>
+        <span>库存</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="material-icons-outlined">bar_chart</span>
+        <span>报表</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="material-icons-outlined">person</span>
+        <span>会员</span>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-icon"><span class="material-icons-outlined" style="font-size:24px">notifications</span></div>
+        <div class="sidebar-icon"><span class="material-icons-outlined" style="font-size:24px">settings</span></div>
+        <div class="sidebar-avatar"><span class="material-icons-outlined">person</span></div>
+      </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main">
+      <!-- 顶部导航 -->
+      <div class="topbar">
+        <div class="tab-group">
+          <button class="tab-btn active">实时包厢</button>
+          <button class="tab-btn">预定管理</button>
+        </div>
+        <div class="search-box">
+          <span class="material-icons-outlined" style="font-size:18px;color:#999">search</span>
+          <input type="text" placeholder="搜索包厢">
+        </div>
+        <div class="topbar-right">
+          <button class="sort-btn">默认排序 <span class="material-icons-outlined" style="font-size:18px">expand_more</span></button>
+          <button class="filter-btn"><span class="material-icons-outlined" style="font-size:18px">filter_list</span> 筛选</button>
+          <div class="view-toggle">
+            <span class="material-icons-outlined active">grid_view</span>
+            <span class="material-icons-outlined">view_list</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 内容区域 -->
+      <div class="content-area">
+        <!-- 房间网格 -->
+        <div class="grid-area">
+
+          <!-- A区 - 8种状态 -->
+          <div class="section-title">A区</div>
+          <div class="room-grid">
+            <div class="room-card idle" onclick="selectRoom(this)">
+              <div class="room-name">A01</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">空闲</span>
+            </div>
+            <div class="room-card booked" onclick="selectRoom(this)">
+              <div class="room-name">A07</div>
+              <div class="room-time" style="font-size:12px">预订：王先生<br>预抵：14:00</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+
+              <span class="status-label">预定</span>
+            </div>
+            <div class="room-card guiding" onclick="selectRoom(this)">
+              <div class="room-name">A08</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">带客</span>
+            </div>
+            <div class="room-card in-use" onclick="selectRoom(this)">
+              <div class="room-name">A02</div>
+              <div class="room-time">09:00 - 12:00</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">15,000</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">中包</div>
+              <span class="status-label">使用中</span>
+            </div>
+            <div class="room-card near-timeout" onclick="selectRoom(this)">
+              <div class="room-name">A03</div>
+              <div class="room-time">08:00 - 11:00</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">18,000</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">中包</div>
+              <span class="status-label">临近超时</span>
+            </div>
+            <div class="room-card overtime" onclick="selectRoom(this)">
+              <div class="room-name">A04</div>
+              <div class="room-time">07:00 - 10:00</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">22,000</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">大包</div>
+              <span class="status-label">已超时</span>
+            </div>
+            <div class="room-card cleaning" onclick="selectRoom(this)">
+              <div class="room-name">A06</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">清洁中</span>
+            </div>
+            <div class="room-card fault" onclick="selectRoom(this)">
+              <div class="room-name">A05</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">故障</span>
+            </div>
+          </div>
+
+          <!-- B区 -->
+          <div class="section-title">B区</div>
+          <div class="room-grid">
+            <div class="room-card in-use" onclick="selectRoom(this)">
+              <div class="room-name">B01</div>
+              <div class="room-time">10:00 - 13:00</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">8,500</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">小包</div>
+              <span class="status-label">使用中</span>
+            </div>
+            <div class="room-card overtime" onclick="selectRoom(this)">
+              <div class="room-name">B02</div>
+              <div class="room-time">06:00 - 09:00</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">15,000</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">中包</div>
+              <span class="status-label">已超时</span>
+            </div>
+            <div class="room-card idle" onclick="selectRoom(this)">
+              <div class="room-name">B03</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">空闲</span>
+            </div>
+            <div class="room-card near-timeout" onclick="selectRoom(this)">
+              <div class="room-name">B04</div>
+              <div class="room-time">08:30 - 11:30</div>
+              <div class="room-price">
+                <span class="status">未结</span>
+                <span class="currency">¥</span><span class="amount">4,000</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">小包</div>
+              <span class="status-label">临近超时</span>
+            </div>
+            <div class="room-card cleaning" onclick="selectRoom(this)">
+              <div class="room-name">B05</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">清洁中</span>
+            </div>
+            <div class="room-card idle" onclick="selectRoom(this)">
+              <div class="room-name">B06</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">空闲</span>
+            </div>
+            <div class="room-card booked" onclick="selectRoom(this)">
+              <div class="room-name">B07</div>
+              <div class="room-time" style="font-size:12px">预订：李先生<br>预抵：16:00</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+
+              <span class="status-label">预定</span>
+            </div>
+            <div class="room-card fault" onclick="selectRoom(this)">
+              <div class="room-name">B08</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">故障</span>
+            </div>
+            <div class="room-card in-use" onclick="selectRoom(this)">
+              <div class="room-name">B09</div>
+              <div class="room-time">11:00 - 14:00</div>
+              <div class="room-price">
+                <span class="status">已结</span>
+                <span class="currency">¥</span><span class="amount">6,200</span><span class="decimal">.00</span>
+              </div>
+              <div class="room-type">小包</div>
+              <span class="status-label">使用中</span>
+            </div>
+            <div class="room-card guiding" onclick="selectRoom(this)">
+              <div class="room-name">B10</div>
+              <div class="room-type" style="margin-top:auto">小包</div>
+              <span class="status-label">带客</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 右侧详情面板 -->
+        <div class="detail-panel">
+          <div class="detail-header">
+            <h2>A01</h2>
+            <div class="detail-tags">
+              <span>小包</span><span class="sep">|</span>
+              <span>空闲中</span><span class="sep">|</span>
+              <span>可容纳 8 人</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-divider"></div>
+            <div class="detail-section-title">快捷操作</div>
+            <div class="action-grid">
+              <div class="action-btn"><span class="material-icons-outlined">login</span>开台</div>
+              <div class="action-btn"><span class="material-icons-outlined">event</span>预订</div>
+              <div class="action-btn"><span class="material-icons-outlined">swap_horiz</span>转台</div>
+              <div class="action-btn"><span class="material-icons-outlined">link</span>联台</div>
+              <div class="action-btn"><span class="material-icons-outlined">shopping_cart</span>点单</div>
+              <div class="action-btn"><span class="material-icons-outlined">more_horiz</span>全部</div>
+            </div>
+            <div class="detail-divider"></div>
+            <div class="detail-section-title">套餐信息</div>
+            <div style="color:#999;font-size:13px">暂无开台信息</div>
+            <div class="detail-divider"></div>
+            <div class="person-section">
+              <div class="person-header"><span class="name">负责人信息</span></div>
+              <div class="detail-row">
+                <span class="label">负责人</span>
+                <span class="value">未分配</span>
+              </div>
+            </div>
+          </div>
+          <div class="detail-footer">
+            <div class="total-row">
+              <span class="total-label">合计</span>
+              <span class="total-amount">¥ 0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部状态栏 -->
+      <div class="statusbar">
+        <span>共 18 间</span>
+        <span class="spacer"></span>
+        <div class="legend"><div class="legend-dot idle"></div>空闲中 4</div>
+        <div class="legend"><div class="legend-dot booked"></div>预定 2</div>
+        <div class="legend"><div class="legend-dot guiding"></div>带客 2</div>
+        <div class="legend"><div class="legend-dot in-use"></div>使用中 4</div>
+        <div class="legend"><div class="legend-dot near-timeout"></div>临近超时 2</div>
+        <div class="legend"><div class="legend-dot overtime"></div>已超时 2</div>
+        <div class="legend"><div class="legend-dot cleaning"></div>清洁中 2</div>
+        <div class="legend"><div class="legend-dot fault"></div>故障 2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const allThemeOrder = ['v3-white', 'base-sat-w', 'bottom-border', 'bottom-flat'];
+
+function switchTheme(themeId, el) {
+  document.documentElement.setAttribute('data-theme', themeId);
+  document.querySelectorAll('.theme-item').forEach(i => i.classList.remove('active'));
+  if (el) {
+    el.classList.add('active');
+  } else {
+    document.querySelector(`.theme-item[data-theme-id="${themeId}"]`)?.classList.add('active');
+  }
+  const active = document.querySelector('.theme-item.active');
+  if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function selectRoom(el) {
+  document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const name = el.querySelector('.room-name').textContent;
+  const type = el.querySelector('.room-type')?.textContent || '';
+  const priceEl = el.querySelector('.room-price');
+
+  document.querySelector('.detail-header h2').textContent = name;
+
+  const statusText = el.classList.contains('guiding') ? '带客' :
+    el.classList.contains('in-use') ? '使用中' :
+    el.classList.contains('near-timeout') ? '临近超时' :
+    el.classList.contains('overtime') ? '已超时' :
+    el.classList.contains('fault') ? '故障' :
+    el.classList.contains('cleaning') ? '清洁中' :
+    el.classList.contains('booked') ? '预定' : '空闲中';
+
+  document.querySelector('.detail-tags').innerHTML =
+    `<span>${type.split('·')[0].trim()}</span><span class="sep">|</span><span>${statusText}</span><span class="sep">|</span><span>可容纳 8 人</span>`;
+
+  if (priceEl) {
+    const amount = priceEl.querySelector('.amount')?.textContent || '0';
+    const decimal = priceEl.querySelector('.decimal')?.textContent || '.00';
+    document.querySelector('.total-amount').textContent = `¥ ${amount}${decimal}`;
+  } else {
+    document.querySelector('.total-amount').textContent = '¥ 0.00';
+  }
+}
+
+// 键盘快捷键
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT') return;
+
+  const keys = { '1': 'v3-white', '2': 'base-sat-w', '3': 'bottom-border', '4': 'bottom-flat' };
+  if (keys[e.key]) { switchTheme(keys[e.key]); return; }
+
+  const current = document.documentElement.getAttribute('data-theme');
+  const idx = allThemeOrder.indexOf(current);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    switchTheme(allThemeOrder[(idx + 1) % allThemeOrder.length]);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    switchTheme(allThemeOrder[(idx - 1 + allThemeOrder.length) % allThemeOrder.length]);
+  }
+});
+</script>
+</body>
+</html>

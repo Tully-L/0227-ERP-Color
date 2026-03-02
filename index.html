@@ -373,7 +373,7 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
       <span class="title">小程序预览</span>
       <span class="close-btn" onclick="closeMiniPreview()" title="关闭">✕</span>
     </div>
-    <iframe id="miniIframe" src="../minipro.html"></iframe>
+    <iframe id="miniIframe"></iframe>
   </div>
   <button class="mini-reopen hidden" id="miniReopen" onclick="openMiniPreview()">小程序预览</button>
 
@@ -742,6 +742,117 @@ function openMiniPreview() {
   });
 
   document.addEventListener('mouseup', function() { dragging = false; });
+})();
+
+// 小程序预览：内嵌 HTML（单文件，无需额外下载）
+(function() {
+  const miniHTML = `<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>实时包厢</title>
+<style>
+:root{--bg:#f8f8f8;--text:#111827;--line:#e5e7eb;--tab-active:#2563eb}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.app{width:100%;max-width:430px;height:100vh;margin:0 auto;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+.navbar{height:44px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;background:var(--bg);border-bottom:1px solid var(--line);flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff}
+.top-tabs{display:flex;background:#f0f0f0;border-radius:8px;margin:12px}
+.top-tab-item{flex:1;text-align:center;padding:10px 0;border-radius:8px;cursor:pointer;font-size:16px;transition:all .2s}
+.top-tab-item.active{background:var(--tab-active);color:#fff}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%;padding:12px;background:#fff}
+.filter-item{padding:4px;border-radius:6px;border:1px solid var(--line);text-align:center;display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none}
+.filter-item.active{border:2px solid #bbb}
+.filter-label{font-size:12px;line-height:1.2;margin-bottom:2px;white-space:nowrap}
+.filter-count{font-size:14px;line-height:1.2;font-weight:500}
+.separator{border-top:1px solid var(--line);height:12px;background:#fff;flex-shrink:0}
+.content{flex:1;overflow:auto;padding:12px;background:#fff}
+.group{margin-bottom:24px}
+.group-title{font-size:18px;line-height:1.3;font-weight:500;margin-bottom:12px}
+.room-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.room-card{min-height:120px;height:120px;border-radius:8px;border:1px solid var(--line);padding:8px;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;position:relative}
+.room-card .status-tag{position:absolute;top:6px;right:6px;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;color:#fff;background:#B49EFF}
+.room-name{font-size:16px;line-height:1.2;font-weight:400;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin-bottom:4px}
+.flex-1{flex:1}
+.time{font-size:12px;line-height:1.25;color:#4b5563;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;color:#9ca3af;font-size:14px;padding:24px 0}
+.tabbar{height:64px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:#fff;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
+.tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#6b7280;font-size:12px;line-height:1}
+.tab-item.active{color:var(--tab-active)}
+.tab-item .icon{font-size:20px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="navbar">实时包厢</header>
+<main class="main">
+<div class="top-tabs" id="topTabs">
+<div class="top-tab-item active" data-tab="room">包厢</div>
+<div class="top-tab-item" data-tab="order">订单</div>
+<div class="top-tab-item" data-tab="booking">预订</div>
+</div>
+<section class="filters" id="filters"></section>
+<div class="separator"></div>
+<section class="content" id="content"></section>
+</main>
+<footer class="tabbar">
+<div class="tab-item"><span class="icon">📊</span><span>营业简报</span></div>
+<div class="tab-item active"><span class="icon">🏠</span><span>实时包厢</span></div>
+<div class="tab-item"><span class="icon">📋</span><span>服务市场</span></div>
+<div class="tab-item"><span class="icon">⚙️</span><span>管理</span></div>
+</footer>
+</div>
+<script>
+var COMBINED_STATUS={IDLE:"idle",IN_USE:"in_use",REMIND:"remind",TIMEOUT:"timeout",FAULT:"fault",CLEANING:"cleaning",WITH_GUEST:"with_guest",BOOKED:"booked"};
+var statusTextMap={[COMBINED_STATUS.IDLE]:"空闲中",[COMBINED_STATUS.IN_USE]:"使用中",[COMBINED_STATUS.REMIND]:"临近超时",[COMBINED_STATUS.TIMEOUT]:"已超时",[COMBINED_STATUS.FAULT]:"故障",[COMBINED_STATUS.CLEANING]:"清洁中",[COMBINED_STATUS.WITH_GUEST]:"带客中",[COMBINED_STATUS.BOOKED]:"预订"};
+var themes={
+"bottom-flat":{cardColors:{[COMBINED_STATUS.IDLE]:"#FFFFFF",[COMBINED_STATUS.IN_USE]:"#C5E4F7",[COMBINED_STATUS.REMIND]:"#FFE5AB",[COMBINED_STATUS.TIMEOUT]:"#FFD4D4",[COMBINED_STATUS.FAULT]:"#DFDEDD",[COMBINED_STATUS.CLEANING]:"#E8F5E8",[COMBINED_STATUS.WITH_GUEST]:"#FFFFFF",[COMBINED_STATUS.BOOKED]:"#F0E6FF"},filterBtnColors:{[COMBINED_STATUS.WITH_GUEST]:"#B49EFF",[COMBINED_STATUS.BOOKED]:"#D8CCFF"},filterTextColors:{default:"#374151",[COMBINED_STATUS.WITH_GUEST]:"#FFFFFF",[COMBINED_STATUS.BOOKED]:"#FFFFFF"},showGuestTag:true,guestTagColor:"#B49EFF"},
+"base-sat-w":{cardColors:{[COMBINED_STATUS.IDLE]:"#FFFFFF",[COMBINED_STATUS.IN_USE]:"#A0D8FF",[COMBINED_STATUS.REMIND]:"#FFD080",[COMBINED_STATUS.TIMEOUT]:"#FFB0B0",[COMBINED_STATUS.FAULT]:"#C8C5C3",[COMBINED_STATUS.CLEANING]:"#C8E8C8",[COMBINED_STATUS.WITH_GUEST]:"#FFFFFF",[COMBINED_STATUS.BOOKED]:"#DFD0FF"},filterBtnColors:{[COMBINED_STATUS.WITH_GUEST]:"#9B85E3",[COMBINED_STATUS.BOOKED]:"#C4B5F0"},filterTextColors:{default:"#374151",[COMBINED_STATUS.WITH_GUEST]:"#FFFFFF",[COMBINED_STATUS.BOOKED]:"#FFFFFF"},showGuestTag:true,guestTagColor:"#9B85E3"}
+};
+var currentTheme="bottom-flat";
+function getTheme(){return themes[currentTheme]}
+var statusFilterOrder=[COMBINED_STATUS.BOOKED,COMBINED_STATUS.IN_USE,COMBINED_STATUS.WITH_GUEST,COMBINED_STATUS.CLEANING,COMBINED_STATUS.REMIND,COMBINED_STATUS.TIMEOUT,COMBINED_STATUS.FAULT,COMBINED_STATUS.IDLE];
+var stages=[
+{roomVO:{id:"1",name:"A01",status:"in_use"},roomTypeVO:{name:"小包厢"},sessionVO:{startTime:1739247600,endTime:1739254800},bookingVOs:[]},
+{roomVO:{id:"2",name:"A02",status:"in_use"},roomTypeVO:{name:"小包厢"},sessionVO:{startTime:1739249400,endTime:1739251800},bookingVOs:[]},
+{roomVO:{id:"3",name:"A03",status:"idle"},roomTypeVO:{name:"小包厢"},sessionVO:null,bookingVOs:[]},
+{roomVO:{id:"4",name:"A05",status:"cleaning"},roomTypeVO:{name:"小包厢"},sessionVO:null,bookingVOs:[]},
+{roomVO:{id:"5",name:"B01",status:"with_guest"},roomTypeVO:{name:"中包厢"},sessionVO:null,bookingVOs:[]},
+{roomVO:{id:"6",name:"B02",status:"in_use"},roomTypeVO:{name:"中包厢"},sessionVO:{startTime:1739246700,endTime:1739248500},bookingVOs:[]},
+{roomVO:{id:"7",name:"B03",status:"fault"},roomTypeVO:{name:"中包厢"},sessionVO:null,bookingVOs:[]},
+{roomVO:{id:"8",name:"C01",status:"idle"},roomTypeVO:{name:"大包厢"},sessionVO:null,bookingVOs:[{}]},
+{roomVO:{id:"9",name:"C02",status:"idle"},roomTypeVO:{name:"大包厢"},sessionVO:null,bookingVOs:[]},
+{roomVO:{id:"10",name:"C03",status:"in_use"},roomTypeVO:{name:"大包厢"},sessionVO:{startTime:1739244300,endTime:1739258700},bookingVOs:[]},
+{roomVO:{id:"11",name:"C05",status:"idle"},roomTypeVO:{name:"大包厢"},sessionVO:null,bookingVOs:[]}
+];
+var fixedTimeSec=Math.floor(Date.now()/1000);
+var selectedFilter=null,activeTopTab="room";
+var filtersEl=document.getElementById("filters"),contentEl=document.getElementById("content"),topTabsEl=document.getElementById("topTabs");
+function getCombinedStatus(stage){
+var rs=stage.roomVO?.status||"idle",hb=Array.isArray(stage.bookingVOs)&&stage.bookingVOs.length>0;
+if(rs==="fault")return COMBINED_STATUS.FAULT;if(rs==="cleaning")return COMBINED_STATUS.CLEANING;if(rs==="with_guest")return COMBINED_STATUS.WITH_GUEST;
+if(rs==="in_use"){if(stage.sessionVO?.endTime){var r=stage.sessionVO.endTime-fixedTimeSec;if(r<=0)return COMBINED_STATUS.TIMEOUT;if(r<=600)return COMBINED_STATUS.REMIND}return COMBINED_STATUS.IN_USE}
+if(rs==="idle"&&hb)return COMBINED_STATUS.BOOKED;return COMBINED_STATUS.IDLE;
+}
+function getFilterCounts(){var c=Object.fromEntries(Object.values(COMBINED_STATUS).map(function(k){return[k,0]}));stages.forEach(function(s){var cb=getCombinedStatus(s);c[cb]++;if(s.roomVO?.status==="in_use"&&cb!==COMBINED_STATUS.IN_USE)c[COMBINED_STATUS.IN_USE]++});return c}
+function getFilteredStages(){if(!selectedFilter)return stages.slice();if(selectedFilter===COMBINED_STATUS.IN_USE)return stages.filter(function(s){return s.roomVO?.status==="in_use"});return stages.filter(function(s){return getCombinedStatus(s)===selectedFilter})}
+function groupByRoomType(list){var g={};list.forEach(function(s){var t=s.roomTypeVO?.name||"未分类";(g[t]=g[t]||[]).push(s)});Object.keys(g).forEach(function(k){g[k].sort(function(a,b){return a.roomVO.name.localeCompare(b.roomVO.name,"zh-CN",{numeric:true})})});return g}
+function formatTime(s){if(!s)return"--";var d=new Date(s*1000);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
+function getCardStyle(s){var st=getCombinedStatus(s),th=getTheme();return{backgroundColor:th.cardColors[st]||"#fff",border:"1px solid #e5e7eb"}}
+function renderFilters(){filtersEl.style.display=activeTopTab==="room"?"grid":"none";var cnt=getFilterCounts();filtersEl.innerHTML="";statusFilterOrder.forEach(function(k){var el=document.createElement("div");el.className="filter-item"+(selectedFilter===k?" active":"");var th=getTheme();el.style.backgroundColor=th.filterBtnColors[k]||th.cardColors[k]||"#fff";el.style.color=th.filterTextColors[k]||th.filterTextColors.default;el.innerHTML='<span class="filter-label">'+statusTextMap[k]+'</span><span class="filter-count">('+( cnt[k]||0)+')</span>';el.onclick=function(){selectedFilter=k;renderContent()};filtersEl.appendChild(el)})}
+function renderContent(){var g=groupByRoomType(getFilteredStages()),keys=Object.keys(g);if(!keys.length){contentEl.innerHTML='<div class="empty">暂无包厢数据</div>';return}contentEl.innerHTML="";keys.forEach(function(t){var ge=document.createElement("section");ge.className="group";var h=document.createElement("h3");h.className="group-title";h.textContent=t;ge.appendChild(h);var gd=document.createElement("div");gd.className="room-grid";g[t].forEach(function(s){var c=document.createElement("article");c.className="room-card";Object.assign(c.style,getCardStyle(s));var n=document.createElement("div");n.className="room-name";n.textContent=s.roomVO.name;var st=getCombinedStatus(s);if(st===COMBINED_STATUS.WITH_GUEST&&getTheme().showGuestTag){var tag=document.createElement("span");tag.className="status-tag";tag.style.background=getTheme().guestTagColor||"#B49EFF";tag.textContent="带客";c.appendChild(tag)}var sp=document.createElement("div");sp.className="flex-1";var tm=document.createElement("div");tm.className="time";tm.textContent=s.sessionVO?formatTime(s.sessionVO.startTime)+" - "+formatTime(s.sessionVO.endTime):"--";c.append(n,sp,tm);gd.appendChild(c)});ge.appendChild(gd);contentEl.appendChild(ge)})}
+topTabsEl.onclick=function(e){var item=e.target.closest(".top-tab-item");if(!item)return;var key=item.dataset.tab;if(key===activeTopTab)return;document.querySelectorAll(".top-tab-item").forEach(function(i){i.classList.remove("active")});item.classList.add("active");activeTopTab=key;if(key==="room"){selectedFilter=null;renderFilters();renderContent()}else{filtersEl.style.display="none";contentEl.innerHTML='<div class="empty">暂无'+(key==="order"?"订单":"预订")+'数据</div>'}};
+function switchMiniTheme(id){if(!themes[id])return;currentTheme=id;selectedFilter=null;renderFilters();renderContent()}
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="switchTheme")switchMiniTheme(e.data.theme)});
+renderFilters();renderContent();
+<\/script>
+</body></html>`;
+
+  const blob = new Blob([miniHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  document.getElementById('miniIframe').src = url;
 })();
 
 // 主题切换时同步到小程序 iframe

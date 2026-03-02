@@ -157,80 +157,48 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 /* ==============================
-   2. BASE 高饱和 — 非白底文字反白
+   1. 高饱和 — 方案2同色系加深，文字更清晰
    ============================== */
-/* 高饱和：统一所有卡片文字字重 */
+[data-theme="base-sat-w"] .room-card { color: #333; }
 [data-theme="base-sat-w"] .room-card .room-name { font-weight: 700; }
-[data-theme="base-sat-w"] .room-card .room-time { font-weight: 600; }
-[data-theme="base-sat-w"] .room-card .room-type { font-weight: 600; }
-[data-theme="base-sat-w"] .room-card .room-price { font-weight: 700; }
-[data-theme="base-sat-w"] .room-card .status-label { font-weight: 600; }
+[data-theme="base-sat-w"] .room-card .room-time { font-weight: 600; color: #333; }
+[data-theme="base-sat-w"] .room-card .room-type { font-weight: 600; color: #444; }
+[data-theme="base-sat-w"] .room-card .room-price { font-weight: 700; color: #1a1a1a; }
+[data-theme="base-sat-w"] .room-card .status-label { font-weight: 600; background: rgba(0,0,0,.1); color: #333; }
 
-/* 白色背景卡片：深色文字 */
-[data-theme="base-sat-w"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
-[data-theme="base-sat-w"] .room-card.idle .room-time { color: #4b5563; }
-[data-theme="base-sat-w"] .room-card.idle .room-type { color: #6b7280; }
+[data-theme="base-sat-w"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; }
 [data-theme="base-sat-w"] .room-card.idle .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
 
-[data-theme="base-sat-w"] .room-card.booked { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
-[data-theme="base-sat-w"] .room-card.booked .room-time { color: #4b5563; }
-[data-theme="base-sat-w"] .room-card.booked .room-type { color: #6b7280; }
-[data-theme="base-sat-w"] .room-card.booked .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
+[data-theme="base-sat-w"] .room-card.booked { background: #DFD0FF; border-color: #DFD0FF; }
+[data-theme="base-sat-w"] .room-card.booked .status-label { background: rgba(0,0,0,.06); color: #555; }
 
-[data-theme="base-sat-w"] .room-card.cleaning { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
-[data-theme="base-sat-w"] .room-card.cleaning .room-time { color: #4b5563; }
-[data-theme="base-sat-w"] .room-card.cleaning .room-type { color: #6b7280; }
-[data-theme="base-sat-w"] .room-card.cleaning .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
-
-/* 非白色背景卡片：深色文字增强对比度 */
-[data-theme="base-sat-w"] .room-card.guiding,
-[data-theme="base-sat-w"] .room-card.in-use,
-[data-theme="base-sat-w"] .room-card.near-timeout,
-[data-theme="base-sat-w"] .room-card.overtime,
-[data-theme="base-sat-w"] .room-card.fault {
-  color: #1a1a1a;
+[data-theme="base-sat-w"] .room-card.guiding { background: #FFFFFF; border-color: #e2e8f0; }
+[data-theme="base-sat-w"] .room-card.guiding .status-label {
+  top: 12px; right: 12px; bottom: auto;
+  background: #9B85E3; color: #fff;
 }
-[data-theme="base-sat-w"] .room-card.guiding .room-name,
-[data-theme="base-sat-w"] .room-card.in-use .room-name,
-[data-theme="base-sat-w"] .room-card.near-timeout .room-name,
-[data-theme="base-sat-w"] .room-card.overtime .room-name,
-[data-theme="base-sat-w"] .room-card.fault .room-name { color: #1a1a1a; }
-[data-theme="base-sat-w"] .room-card.guiding .room-time,
-[data-theme="base-sat-w"] .room-card.in-use .room-time,
-[data-theme="base-sat-w"] .room-card.near-timeout .room-time,
-[data-theme="base-sat-w"] .room-card.overtime .room-time,
-[data-theme="base-sat-w"] .room-card.fault .room-time { color: #333; }
-[data-theme="base-sat-w"] .room-card.guiding .room-type,
-[data-theme="base-sat-w"] .room-card.in-use .room-type,
-[data-theme="base-sat-w"] .room-card.near-timeout .room-type,
-[data-theme="base-sat-w"] .room-card.overtime .room-type,
-[data-theme="base-sat-w"] .room-card.fault .room-type { color: #444; }
-[data-theme="base-sat-w"] .room-card.guiding .room-price,
-[data-theme="base-sat-w"] .room-card.in-use .room-price,
-[data-theme="base-sat-w"] .room-card.near-timeout .room-price,
-[data-theme="base-sat-w"] .room-card.overtime .room-price,
-[data-theme="base-sat-w"] .room-card.fault .room-price { color: #1a1a1a; }
-[data-theme="base-sat-w"] .room-card.guiding .status-label,
-[data-theme="base-sat-w"] .room-card.in-use .status-label,
-[data-theme="base-sat-w"] .room-card.near-timeout .status-label,
-[data-theme="base-sat-w"] .room-card.overtime .status-label,
-[data-theme="base-sat-w"] .room-card.fault .status-label { background: rgba(0,0,0,.1); color: #333; }
 
-[data-theme="base-sat-w"] .room-card.guiding { background: #6EE8A8; border-color: #6EE8A8; }
-[data-theme="base-sat-w"] .room-card.in-use { background: #80CFFF; border-color: #80CFFF; }
-[data-theme="base-sat-w"] .room-card.near-timeout { background: #FFD26E; border-color: #FFD26E; }
-[data-theme="base-sat-w"] .room-card.overtime { background: #FF9797; border-color: #FF9797; }
-[data-theme="base-sat-w"] .room-card.fault { background: #C2BFBD; border-color: #C2BFBD; }
+[data-theme="base-sat-w"] .room-card.in-use { background: #A0D8FF; border-color: #A0D8FF; }
+[data-theme="base-sat-w"] .room-card.in-use .room-price { color: #e23939; }
 
+[data-theme="base-sat-w"] .room-card.near-timeout { background: #FFD080; border-color: #FFD080; }
+[data-theme="base-sat-w"] .room-card.near-timeout .room-price { color: #c62828; }
+
+[data-theme="base-sat-w"] .room-card.overtime { background: #FFB0B0; border-color: #FFB0B0; }
+[data-theme="base-sat-w"] .room-card.overtime .room-price { color: #b71c1c; }
+
+[data-theme="base-sat-w"] .room-card.cleaning { background: #C8E8C8; border-color: #C8E8C8; }
+
+[data-theme="base-sat-w"] .room-card.fault { background: #C8C5C3; border-color: #C8C5C3; }
 
 [data-theme="base-sat-w"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.booked { background: #FFFFFF; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.guiding { background: #6EE8A8; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.in-use { background: #80CFFF; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.near-timeout { background: #FFD26E; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.overtime { background: #FF9797; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.cleaning { background: #FFFFFF; border: 1px solid #999; }
-[data-theme="base-sat-w"] .legend-dot.fault { background: #C2BFBD; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.booked { background: #DFD0FF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.guiding { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.in-use { background: #A0D8FF; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.near-timeout { background: #FFD080; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.overtime { background: #FFB0B0; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.cleaning { background: #C8E8C8; border: 1px solid #999; }
+[data-theme="base-sat-w"] .legend-dot.fault { background: #C8C5C3; border: 1px solid #999; }
 
 /* ==============================
    4. BOTTOM · 无渐变 — 纯色填充无边框
@@ -367,13 +335,13 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
         <div class="theme-name">高饱和</div>
         <div class="theme-swatches">
           <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
+          <div class="theme-swatch" style="background:#DFD0FF"></div>
           <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
-          <div class="theme-swatch" style="background:#92FBC0"></div>
-          <div class="theme-swatch" style="background:#80CFFF"></div>
-          <div class="theme-swatch" style="background:#FFD26E"></div>
-          <div class="theme-swatch" style="background:#FF9797"></div>
-          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
-          <div class="theme-swatch" style="background:#C2BFBD"></div>
+          <div class="theme-swatch" style="background:#A0D8FF"></div>
+          <div class="theme-swatch" style="background:#FFD080"></div>
+          <div class="theme-swatch" style="background:#FFB0B0"></div>
+          <div class="theme-swatch" style="background:#C8E8C8"></div>
+          <div class="theme-swatch" style="background:#C8C5C3"></div>
         </div>
         <div class="shortcut-hint"><kbd>1</kbd></div>
       </div>

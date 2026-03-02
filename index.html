@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="v3-white">
+<html lang="zh-CN" data-theme="base-sat-w">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KTV 包厢管理 - 四方案对比</title>
+<title>KTV 包厢管理 - 双方案对比</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -157,37 +157,6 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 /* ==============================
-   1. V3 · 宝蓝系（渐变） — 空闲改白色
-   ============================== */
-[data-theme="v3-white"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; color: #333; }
-[data-theme="v3-white"] .room-card.idle .room-time { color: #4b5563; }
-[data-theme="v3-white"] .room-card.idle .room-type { color: #6b7280; }
-[data-theme="v3-white"] .room-card.idle .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
-
-[data-theme="v3-white"] .room-card { color: #fff; border-color: transparent; }
-[data-theme="v3-white"] .room-card .room-time { color: rgba(255,255,255,.8); }
-[data-theme="v3-white"] .room-card .room-type { color: rgba(255,255,255,.8); }
-[data-theme="v3-white"] .room-card .room-price { color: #fff; }
-[data-theme="v3-white"] .room-card .status-label { background: rgba(255,255,255,.2); color: #fff; }
-
-[data-theme="v3-white"] .room-card.in-use { background: linear-gradient(180deg, #2E7D32, #66BB6A); }
-[data-theme="v3-white"] .room-card.near-timeout { background: linear-gradient(180deg, #FF8F00, #FFCA28); }
-[data-theme="v3-white"] .room-card.overtime { background: linear-gradient(180deg, #BF360C, #E57373); }
-[data-theme="v3-white"] .room-card.fault { background: linear-gradient(180deg, #5D4037, #A1887F); }
-[data-theme="v3-white"] .room-card.cleaning { background: linear-gradient(180deg, #0277BD, #4FC3F7); }
-[data-theme="v3-white"] .room-card.booked { background: linear-gradient(180deg, #6A1B9A, #AB47BC); }
-[data-theme="v3-white"] .room-card.guiding { background: linear-gradient(180deg, #00897B, #4DB6AC); }
-
-[data-theme="v3-white"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
-[data-theme="v3-white"] .legend-dot.in-use { background: linear-gradient(180deg, #2E7D32, #66BB6A); border: none; }
-[data-theme="v3-white"] .legend-dot.near-timeout { background: linear-gradient(180deg, #FF8F00, #FFCA28); border: none; }
-[data-theme="v3-white"] .legend-dot.overtime { background: linear-gradient(180deg, #BF360C, #E57373); border: none; }
-[data-theme="v3-white"] .legend-dot.fault { background: linear-gradient(180deg, #5D4037, #A1887F); border: none; }
-[data-theme="v3-white"] .legend-dot.cleaning { background: linear-gradient(180deg, #0277BD, #4FC3F7); border: none; }
-[data-theme="v3-white"] .legend-dot.booked { background: linear-gradient(180deg, #6A1B9A, #AB47BC); border: none; }
-[data-theme="v3-white"] .legend-dot.guiding { background: linear-gradient(180deg, #00897B, #4DB6AC); border: none; }
-
-/* ==============================
    2. BASE 高饱和 — 非白底文字反白
    ============================== */
 /* 高饱和：统一所有卡片文字字重 */
@@ -213,39 +182,39 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 [data-theme="base-sat-w"] .room-card.cleaning .room-type { color: #6b7280; }
 [data-theme="base-sat-w"] .room-card.cleaning .status-label { background: rgba(0,0,0,.04); color: #6b7280; }
 
-/* 非白色背景卡片：白色文字 + 阴影增强可读性 */
+/* 非白色背景卡片：深色文字增强对比度 */
 [data-theme="base-sat-w"] .room-card.guiding,
 [data-theme="base-sat-w"] .room-card.in-use,
 [data-theme="base-sat-w"] .room-card.near-timeout,
 [data-theme="base-sat-w"] .room-card.overtime,
 [data-theme="base-sat-w"] .room-card.fault {
-  color: #fff;
+  color: #1a1a1a;
 }
 [data-theme="base-sat-w"] .room-card.guiding .room-name,
 [data-theme="base-sat-w"] .room-card.in-use .room-name,
 [data-theme="base-sat-w"] .room-card.near-timeout .room-name,
 [data-theme="base-sat-w"] .room-card.overtime .room-name,
-[data-theme="base-sat-w"] .room-card.fault .room-name { color: #fff; }
+[data-theme="base-sat-w"] .room-card.fault .room-name { color: #1a1a1a; }
 [data-theme="base-sat-w"] .room-card.guiding .room-time,
 [data-theme="base-sat-w"] .room-card.in-use .room-time,
 [data-theme="base-sat-w"] .room-card.near-timeout .room-time,
 [data-theme="base-sat-w"] .room-card.overtime .room-time,
-[data-theme="base-sat-w"] .room-card.fault .room-time { color: #fff; }
+[data-theme="base-sat-w"] .room-card.fault .room-time { color: #333; }
 [data-theme="base-sat-w"] .room-card.guiding .room-type,
 [data-theme="base-sat-w"] .room-card.in-use .room-type,
 [data-theme="base-sat-w"] .room-card.near-timeout .room-type,
 [data-theme="base-sat-w"] .room-card.overtime .room-type,
-[data-theme="base-sat-w"] .room-card.fault .room-type { color: #fff; }
+[data-theme="base-sat-w"] .room-card.fault .room-type { color: #444; }
 [data-theme="base-sat-w"] .room-card.guiding .room-price,
 [data-theme="base-sat-w"] .room-card.in-use .room-price,
 [data-theme="base-sat-w"] .room-card.near-timeout .room-price,
 [data-theme="base-sat-w"] .room-card.overtime .room-price,
-[data-theme="base-sat-w"] .room-card.fault .room-price { color: #fff; }
+[data-theme="base-sat-w"] .room-card.fault .room-price { color: #1a1a1a; }
 [data-theme="base-sat-w"] .room-card.guiding .status-label,
 [data-theme="base-sat-w"] .room-card.in-use .status-label,
 [data-theme="base-sat-w"] .room-card.near-timeout .status-label,
 [data-theme="base-sat-w"] .room-card.overtime .status-label,
-[data-theme="base-sat-w"] .room-card.fault .status-label { background: rgba(0,0,0,.15); color: #fff; text-shadow: none; }
+[data-theme="base-sat-w"] .room-card.fault .status-label { background: rgba(0,0,0,.1); color: #333; }
 
 [data-theme="base-sat-w"] .room-card.guiding { background: #6EE8A8; border-color: #6EE8A8; }
 [data-theme="base-sat-w"] .room-card.in-use { background: #80CFFF; border-color: #80CFFF; }
@@ -264,35 +233,6 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 [data-theme="base-sat-w"] .legend-dot.fault { background: #C2BFBD; border: 1px solid #999; }
 
 /* ==============================
-   3. BOTTOM · 边框 — 底部标记条+彩色底边框
-   ============================== */
-[data-theme="bottom-border"] .room-card { color: #333; }
-[data-theme="bottom-border"] .room-card .room-time { color: #4b5563; }
-[data-theme="bottom-border"] .room-card .room-type { color: #6b7280; }
-[data-theme="bottom-border"] .room-card .status-label { background: rgba(255,255,255,.5); color: #6b7280; }
-
-[data-theme="bottom-border"] .room-card.idle { background: #FFFFFF; border-color: #e2e8f0; border-bottom: 4px solid #999; }
-[data-theme="bottom-border"] .room-card.in-use { background: #C5E4F7; border-color: #C5E4F7; border-bottom: 4px solid #1976D2; }
-[data-theme="bottom-border"] .room-card.in-use .room-price { color: #e23939; }
-[data-theme="bottom-border"] .room-card.near-timeout { background: #FFE5AB; border-color: #FFE5AB; border-bottom: 4px solid #EF6C00; }
-[data-theme="bottom-border"] .room-card.near-timeout .room-price { color: #c62828; }
-[data-theme="bottom-border"] .room-card.overtime { background: #FFD4D4; border-color: #FFD4D4; border-bottom: 4px solid #C62828; }
-[data-theme="bottom-border"] .room-card.overtime .room-price { color: #b71c1c; }
-[data-theme="bottom-border"] .room-card.fault { background: #DFDEDD; border-color: #DFDEDD; border-bottom: 4px solid #757575; }
-[data-theme="bottom-border"] .room-card.cleaning { background: #E8F5E8; border-color: #E8F5E8; border-bottom: 4px solid #388E3C; }
-[data-theme="bottom-border"] .room-card.guiding { background: #F0E6FF; border-color: #F0E6FF; border-bottom: 4px solid #7B1FA2; }
-[data-theme="bottom-border"] .room-card.booked { background: #FFFFFF; border-color: #e2e8f0; border-bottom: 4px solid #7B61FF; }
-
-[data-theme="bottom-border"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.in-use { background: #C5E4F7; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.near-timeout { background: #FFE5AB; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.overtime { background: #FFD4D4; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.fault { background: #DFDEDD; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.cleaning { background: #E8F5E8; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.guiding { background: #F0E6FF; border: 1px solid #999; }
-[data-theme="bottom-border"] .legend-dot.booked { background: #FFFFFF; border: 1px solid #7B61FF; }
-
-/* ==============================
    4. BOTTOM · 无渐变 — 纯色填充无边框
    ============================== */
 [data-theme="bottom-flat"] .room-card { color: #333; }
@@ -309,12 +249,18 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 [data-theme="bottom-flat"] .room-card.overtime .room-price { color: #b71c1c; }
 [data-theme="bottom-flat"] .room-card.fault { background: #DFDEDD; border-color: #DFDEDD; }
 [data-theme="bottom-flat"] .room-card.cleaning { background: #E8F5E8; border-color: #E8F5E8; }
-[data-theme="bottom-flat"] .room-card.guiding { background: #F0E6FF; border-color: #F0E6FF; }
-[data-theme="bottom-flat"] .room-card.booked { background: #7B61FF; border-color: #7B61FF; color: #fff; }
-[data-theme="bottom-flat"] .room-card.booked .room-name { color: #fff; }
-[data-theme="bottom-flat"] .room-card.booked .room-time { color: rgba(255,255,255,.85); }
-[data-theme="bottom-flat"] .room-card.booked .room-type { color: rgba(255,255,255,.8); }
-[data-theme="bottom-flat"] .room-card.booked .status-label { background: rgba(255,255,255,.25); color: #fff; }
+[data-theme="bottom-flat"] .room-card.guiding { background: #FFFFFF; border-color: #e2e8f0; }
+[data-theme="bottom-flat"] .room-card.guiding .room-time { color: #4b5563; }
+[data-theme="bottom-flat"] .room-card.guiding .room-type { color: #6b7280; }
+[data-theme="bottom-flat"] .room-card.guiding .status-label {
+  top: 12px; right: 12px; bottom: auto;
+  background: #B49EFF; color: #fff; font-weight: 600;
+}
+[data-theme="bottom-flat"] .room-card.booked { background: #F0E6FF; border-color: #F0E6FF; color: #333; }
+[data-theme="bottom-flat"] .room-card.booked .room-name { color: #333; }
+[data-theme="bottom-flat"] .room-card.booked .room-time { color: #4b5563; }
+[data-theme="bottom-flat"] .room-card.booked .room-type { color: #6b7280; }
+[data-theme="bottom-flat"] .room-card.booked .status-label { background: rgba(0,0,0,.06); color: #6b7280; }
 
 [data-theme="bottom-flat"] .legend-dot.idle { background: #FFFFFF; border: 1px solid #999; }
 [data-theme="bottom-flat"] .legend-dot.in-use { background: #C5E4F7; border: 1px solid #999; }
@@ -322,8 +268,8 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 [data-theme="bottom-flat"] .legend-dot.overtime { background: #FFD4D4; border: 1px solid #999; }
 [data-theme="bottom-flat"] .legend-dot.fault { background: #DFDEDD; border: 1px solid #999; }
 [data-theme="bottom-flat"] .legend-dot.cleaning { background: #E8F5E8; border: 1px solid #999; }
-[data-theme="bottom-flat"] .legend-dot.guiding { background: #F0E6FF; border: 1px solid #999; }
-[data-theme="bottom-flat"] .legend-dot.booked { background: #7B61FF; border: none; }
+[data-theme="bottom-flat"] .legend-dot.guiding { background: #FFFFFF; border: 1px solid #999; }
+[data-theme="bottom-flat"] .legend-dot.booked { background: #F0E6FF; border: 1px solid #999; }
 
 /* ===== 右侧详情面板 ===== */
 .detail-panel {
@@ -370,6 +316,40 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 .action-btn:hover { background: #f5f5f5; border-color: #ddd; }
 .action-btn .material-icons-outlined { font-size: 22px; color: #666; }
+
+/* ===== 小程序预览浮窗 ===== */
+.mini-preview {
+  position: fixed; right: 260px; top: 50%; z-index: 999;
+  transform: translateY(-50%);
+  width: 340px; height: 640px;
+  border-radius: 32px; background: #111;
+  padding: 12px; box-shadow: 0 8px 40px rgba(0,0,0,.35);
+  display: flex; flex-direction: column;
+}
+.mini-preview-header {
+  height: 28px; display: flex; align-items: center; justify-content: space-between;
+  color: rgba(255,255,255,.6); font-size: 11px; font-weight: 500;
+  cursor: grab; user-select: none; flex-shrink: 0; padding: 0 8px;
+}
+.mini-preview-header:active { cursor: grabbing; }
+.mini-preview-header .title { letter-spacing: 1px; }
+.mini-preview-header .close-btn {
+  width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 12px; color: rgba(255,255,255,.5); transition: all .15s;
+}
+.mini-preview-header .close-btn:hover { background: rgba(255,255,255,.3); color: #fff; }
+.mini-preview iframe {
+  flex: 1; border: none; border-radius: 20px; background: #fff; width: 100%;
+}
+.mini-preview.hidden { display: none; }
+.mini-reopen {
+  position: fixed; right: 260px; bottom: 24px; z-index: 998;
+  background: #111; color: rgba(255,255,255,.7); border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+.mini-reopen:hover { color: #fff; }
+.mini-reopen.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -378,27 +358,12 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
   <div class="theme-sidebar">
     <div class="theme-tab-hint">配 色 方 案</div>
     <div class="theme-sidebar-header">
-      <h3>四方案对比</h3>
-      <p>点击切换 / 键盘 1-4 / 方向键</p>
+      <h3>双方案对比</h3>
+      <p>点击切换 / 键盘 1-2 / 方向键</p>
     </div>
     <div class="theme-list">
 
-      <div class="theme-item active" onclick="switchTheme('v3-white', this)" data-theme-id="v3-white">
-        <div class="theme-name">渐变</div>
-        <div class="theme-swatches">
-          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#6A1B9A,#AB47BC)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#00897B,#4DB6AC)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#2E7D32,#66BB6A)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#FF8F00,#FFCA28)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#BF360C,#E57373)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#0277BD,#4FC3F7)"></div>
-          <div class="theme-swatch" style="background:linear-gradient(180deg,#5D4037,#A1887F)"></div>
-        </div>
-        <div class="shortcut-hint"><kbd>1</kbd></div>
-      </div>
-
-      <div class="theme-item" onclick="switchTheme('base-sat-w', this)" data-theme-id="base-sat-w">
+      <div class="theme-item active" onclick="switchTheme('base-sat-w', this)" data-theme-id="base-sat-w">
         <div class="theme-name">高饱和</div>
         <div class="theme-swatches">
           <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
@@ -410,37 +375,22 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
           <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
           <div class="theme-swatch" style="background:#C2BFBD"></div>
         </div>
-        <div class="shortcut-hint"><kbd>2</kbd></div>
-      </div>
-
-      <div class="theme-item" onclick="switchTheme('bottom-border', this)" data-theme-id="bottom-border">
-        <div class="theme-name">边框</div>
-        <div class="theme-swatches">
-          <div class="theme-swatch" style="background:#FFFFFF;border-bottom:3px solid #999"></div>
-          <div class="theme-swatch" style="background:#FFFFFF;border-bottom:3px solid #7B61FF"></div>
-          <div class="theme-swatch" style="background:#F0E6FF;border-bottom:3px solid #7B1FA2"></div>
-          <div class="theme-swatch" style="background:#C5E4F7;border-bottom:3px solid #1976D2"></div>
-          <div class="theme-swatch" style="background:#FFE5AB;border-bottom:3px solid #EF6C00"></div>
-          <div class="theme-swatch" style="background:#FFD4D4;border-bottom:3px solid #C62828"></div>
-          <div class="theme-swatch" style="background:#E8F5E8;border-bottom:3px solid #388E3C"></div>
-          <div class="theme-swatch" style="background:#DFDEDD;border-bottom:3px solid #757575"></div>
-        </div>
-        <div class="shortcut-hint"><kbd>3</kbd></div>
+        <div class="shortcut-hint"><kbd>1</kbd></div>
       </div>
 
       <div class="theme-item" onclick="switchTheme('bottom-flat', this)" data-theme-id="bottom-flat">
         <div class="theme-name">无渐变</div>
         <div class="theme-swatches">
           <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
-          <div class="theme-swatch" style="background:#7B61FF"></div>
           <div class="theme-swatch" style="background:#F0E6FF"></div>
+          <div class="theme-swatch" style="background:#FFFFFF;border:1px solid #999"></div>
           <div class="theme-swatch" style="background:#C5E4F7"></div>
           <div class="theme-swatch" style="background:#FFE5AB"></div>
           <div class="theme-swatch" style="background:#FFD4D4"></div>
           <div class="theme-swatch" style="background:#E8F5E8"></div>
           <div class="theme-swatch" style="background:#DFDEDD"></div>
         </div>
-        <div class="shortcut-hint"><kbd>4</kbd></div>
+        <div class="shortcut-hint"><kbd>2</kbd></div>
       </div>
 
     </div>
@@ -448,6 +398,16 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
       空闲 · 预定 · 带客 · 使用中 · 临近超时<br>已超时 · 清洁中 · 故障
     </div>
   </div>
+
+  <!-- 小程序预览 -->
+  <div class="mini-preview" id="miniPreview">
+    <div class="mini-preview-header" id="miniDragHandle">
+      <span class="title">小程序预览</span>
+      <span class="close-btn" onclick="closeMiniPreview()" title="关闭">✕</span>
+    </div>
+    <iframe id="miniIframe" src="../minipro.html"></iframe>
+  </div>
+  <button class="mini-reopen hidden" id="miniReopen" onclick="openMiniPreview()">小程序预览</button>
 
   <!-- KTV 应用主体 -->
   <div class="app">
@@ -713,7 +673,7 @@ body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 </div>
 
 <script>
-const allThemeOrder = ['v3-white', 'base-sat-w', 'bottom-border', 'bottom-flat'];
+const allThemeOrder = ['base-sat-w', 'bottom-flat'];
 
 function switchTheme(themeId, el) {
   document.documentElement.setAttribute('data-theme', themeId);
@@ -725,6 +685,8 @@ function switchTheme(themeId, el) {
   }
   const active = document.querySelector('.theme-item.active');
   if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  // 同步小程序预览
+  syncMiniTheme(themeId);
 }
 
 function selectRoom(el) {
@@ -760,7 +722,7 @@ function selectRoom(el) {
 document.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT') return;
 
-  const keys = { '1': 'v3-white', '2': 'base-sat-w', '3': 'bottom-border', '4': 'bottom-flat' };
+  const keys = { '1': 'base-sat-w', '2': 'bottom-flat' };
   if (keys[e.key]) { switchTheme(keys[e.key]); return; }
 
   const current = document.documentElement.getAttribute('data-theme');
@@ -773,6 +735,58 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
     switchTheme(allThemeOrder[(idx - 1 + allThemeOrder.length) % allThemeOrder.length]);
   }
+});
+
+// 小程序预览：关闭/打开
+function closeMiniPreview() {
+  document.getElementById('miniPreview').classList.add('hidden');
+  document.getElementById('miniReopen').classList.remove('hidden');
+}
+function openMiniPreview() {
+  document.getElementById('miniPreview').classList.remove('hidden');
+  document.getElementById('miniReopen').classList.add('hidden');
+}
+
+// 小程序预览：拖拽移动
+(function() {
+  const panel = document.getElementById('miniPreview');
+  const handle = document.getElementById('miniDragHandle');
+  let dragging = false, startX, startY, origX, origY;
+
+  handle.addEventListener('mousedown', function(e) {
+    if (e.target.closest('.close-btn')) return;
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    const rect = panel.getBoundingClientRect();
+    origX = rect.left; origY = rect.top;
+    // 切换到 left/top 定位，去掉 right/transform
+    panel.style.right = 'auto';
+    panel.style.transform = 'none';
+    panel.style.left = origX + 'px';
+    panel.style.top = origY + 'px';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    panel.style.left = (origX + e.clientX - startX) + 'px';
+    panel.style.top = (origY + e.clientY - startY) + 'px';
+  });
+
+  document.addEventListener('mouseup', function() { dragging = false; });
+})();
+
+// 主题切换时同步到小程序 iframe
+function syncMiniTheme(themeId) {
+  const iframe = document.getElementById('miniIframe');
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.postMessage({ type: 'switchTheme', theme: themeId }, '*');
+  }
+}
+// iframe 加载完成后同步当前主题
+document.getElementById('miniIframe').addEventListener('load', function() {
+  const current = document.documentElement.getAttribute('data-theme');
+  syncMiniTheme(current);
 });
 </script>
 </body>
